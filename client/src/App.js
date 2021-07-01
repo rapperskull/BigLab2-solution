@@ -47,6 +47,8 @@ const Main = () => {
   const [loggedIn, setLoggedIn] = useState(false); // at the beginning, no user is logged in
   const [user, setUser] = useState(null);
 
+  const [loaded, setLoaded] = useState(false);
+
   // active filter is read from the current url
   const match = useRouteMatch('/list/:filter');
   const activeFilter = (match && match.params && match.params.filter) ? match.params.filter : 'all';
@@ -68,6 +70,7 @@ const Main = () => {
       } catch (err) {
         console.log(err.error); // mostly unauthenticated user
       }
+      setLoaded(true);
     };
     checkAuth();
   }, []);
@@ -163,6 +166,7 @@ const Main = () => {
     setDirty(true);
   }
 
+  if(!loaded) return null;
  
   return (
 
