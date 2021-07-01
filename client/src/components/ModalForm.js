@@ -4,14 +4,31 @@ import dayjs from 'dayjs';
 
 
 const ModalForm = (props) => {
-  const { task, onClose, onSave } = props;
+  const { task, onClose, onSave, show, user } = props;
 
   // use controlled form components
-  const [description, setDescription] = useState(task ? task.description : '');
-  const [isImportant, setIsImportant] = useState(task ? task.important : false);
-  const [isPrivate, setIsPrivate] = useState(task ? task.private : true);
-  const [deadlineDate, setDeadlineDate] = useState( (task && task.deadline) ? task.deadline.format('YYYY-MM-DD') : '');
-  const [deadlineTime, setDeadlineTime] = useState( (task && task.deadline) ? task.deadline.format('HH:mm') : '');
+  const [description, setDescription] = useState('');
+  const [isImportant, setIsImportant] = useState(false);
+  const [isPrivate, setIsPrivate] = useState(true);
+  const [deadlineDate, setDeadlineDate] = useState('');
+  const [deadlineTime, setDeadlineTime] = useState('');
+
+  const setFields = () => {
+    setDescription(task ? task.description : '');
+    setIsImportant(task ? task.important : false);
+    setIsPrivate(task ? task.private : true);
+    setDeadlineDate((task && task.deadline) ? task.deadline.format('YYYY-MM-DD') : '');
+    setDeadlineTime((task && task.deadline) ? task.deadline.format('HH:mm') : '');
+  };
+
+  const closeCleanup = () => {
+    setDescription('');
+    setIsImportant(false);
+    setIsPrivate(false);
+    setDeadlineDate('');
+    setDeadlineTime('');
+    onClose();
+  };
   
 
   // enables / disables react-bootstrap validation report
@@ -42,7 +59,7 @@ const ModalForm = (props) => {
         deadline = dayjs(deadlineDate + "T12:00"); // tasks with no time are due by noon
       }
 
-      const newTask = Object.assign({}, task, { description, important: isImportant, private: isPrivate, deadline} );
+      const newTask = Object.assign({}, task, { description, important: isImportant, private: isPrivate, deadline, user: user.id} );
 
       onSave(newTask);
     }
@@ -74,7 +91,7 @@ const ModalForm = (props) => {
   // Form.Control.Feedback : reports feedback in react-bootstrap style
   // since the modal is added to the page only when needed the show flag can be always true
   return (
-    <Modal show onHide={onClose} animation={false}>
+    <Modal show={show} onEnter={setFields} onHide={closeCleanup} animation={true}>
       <Modal.Header closeButton>
         <Modal.Title>Add task</Modal.Title>
       </Modal.Header>
@@ -104,7 +121,7 @@ const ModalForm = (props) => {
           </Form.Group>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={onClose}>Close</Button>
+          <Button variant="secondary" onClick={closeCleanup}>Close</Button>
           <Button variant="primary" type="submit">Save</Button>
         </Modal.Footer>
       </Form>

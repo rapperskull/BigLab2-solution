@@ -10,6 +10,7 @@ function LoginForm(props) {
   const handleSubmit = (event) => {
     event.preventDefault();
     setErrorMessage('');
+    setShow(false);
     const credentials = { username, password };
 
     // basic validation

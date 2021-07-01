@@ -45,7 +45,7 @@ function addTask(task) {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ ...task, completed: false, user: 1 })
+      body: JSON.stringify({ ...task, completed: false })
     })
   )
 }
@@ -57,7 +57,7 @@ function updateTask(task) {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({...task, user: 1})
+      body: JSON.stringify({...task})
     })
   )
 }

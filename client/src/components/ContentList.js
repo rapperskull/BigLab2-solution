@@ -29,15 +29,15 @@ const TaskRowData = (props) => {
 
   return (
     <>
-      <div className="flex-fill m-auto">
-        <Form.Group className="m-0" controlId="formBasicCheckbox">
+      <div className="flex-fill m-auto col text-break">
+        <Form.Group className="m-0" controlId={`check-${task.id || ''}`}>
           <Form.Check type="checkbox">
             <Form.Check.Input type="checkbox" defaultChecked={task.completed} onChange={ (ev) => onCheck(ev.target.checked)} />
             <Form.Check.Label className={labelClassName} >{task.description}</Form.Check.Label>
           </Form.Check>
         </Form.Group></div>
-      <div className="flex-fill mx-2 m-auto"><PersonSquare className={task.private ? 'invisible' : ''} /></div>
-      <div className="flex-fill m-auto"><small>{formatDeadline(task.deadline)}</small></div>
+      <div className="flex-fill mx-2 m-auto col-auto"><PersonSquare className={task.private ? 'invisible' : ''} /></div>
+      <div className="flex-fill m-auto col"><small>{formatDeadline(task.deadline)}</small></div>
     </>
   )
 }
@@ -46,10 +46,8 @@ const TaskRowControl = (props) => {
   const { onDelete, onEdit } = props;
   return (
     <>
-      <div className="ml-10">
-        <Button variant="link" className="shadow-none" onClick={onEdit}><PencilSquare /></Button>
-        <Button variant="link" className="shadow-none" onClick={onDelete}><Trash /></Button>
-      </div>
+      <Button variant="link" className="shadow-none col-auto" onClick={onEdit}><PencilSquare /></Button>
+      <Button variant="link" className="shadow-none col-auto" onClick={onDelete}><Trash /></Button>
     </>
   )
 }

@@ -1,5 +1,6 @@
 import { React, useState, useEffect } from 'react';
 import { BrowserRouter as Router } from 'react-router-dom';
+import { Plus } from 'react-bootstrap-icons';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
@@ -167,7 +168,7 @@ const Main = () => {
 
     <Container fluid>
       <Row>
-        <Navigation onLogOut={handleLogOut} loggedIn={loggedIn}  user={user} />
+        <Navigation onLogOut={handleLogOut} loggedIn={loggedIn} user={user} />
       </Row>
 
       <Toast show={message !== ''} onClose={() => setMessage('')} delay={3000} autohide>
@@ -184,8 +185,8 @@ const Main = () => {
           {loggedIn ?
             <Row className="vh-100 below-nav">
               <TaskMgr taskList={taskList} filter={activeFilter} onDelete={deleteTask} onEdit={handleEdit} onCheck={handleCheck} onSelect={handleSelectFilter}></TaskMgr>
-              <Button variant="success" size="lg" className="fixed-right-bottom" onClick={() => setSelectedTask(MODAL.ADD)}>+</Button>
-              {(selectedTask !== MODAL.CLOSED) && <ModalForm task={findTask(selectedTask)} onSave={handleSaveOrUpdate} onClose={handleClose}></ModalForm>}
+              <Button variant="success" size="lg" className="fixed-right-bottom" onClick={() => setSelectedTask(MODAL.ADD)}><Plus/></Button>
+              <ModalForm task={findTask(selectedTask)} onSave={handleSaveOrUpdate} onClose={handleClose} show={selectedTask !== MODAL.CLOSED} user={user}></ModalForm>
             </Row> : <Redirect to="/login" />
           }
         </Route>
@@ -204,34 +205,11 @@ const TaskMgr = (props) => {
 
   const { taskList, filter, onDelete, onEdit, onCheck, onSelect } = props;
 
-
-  // ** FILTER DEFINITIONS AND HELPER FUNCTIONS **
-  const filters = {
-    'all': { label: 'All', id: 'all', filterFn: () => true },
-    'important': { label: 'Important', id: 'important', filterFn: t => t.important },
-    'today': { label: 'Today', id: 'today', filterFn: t => t.deadline && t.deadline.isToday() },
-    'nextweek': { label: 'Next 7 Days', id: 'nextweek', filterFn: t => isNextWeek(t.deadline) },
-    'private': { label: 'Private', id: 'private', filterFn: t => t.private },
-  };
-
-  // if filter is not know apply "all"
-  const activeFilter = (filter && filter in filters) ? filter : 'all';
-
-  const isNextWeek = (d) => {
-    const tomorrow = dayjs().add(1, 'day');
-    const nextWeek = dayjs().add(7, 'day');
-    const ret = d && (!d.isBefore(tomorrow, 'day') && !d.isAfter(nextWeek, 'day'));
-    return ret;
-  }
-
-
   return (
     <>
-        <Col bg="light" className="d-block col-4" id="left-sidebar">
-          <Filters items={filters} defaultActiveKey={activeFilter} onSelect={onSelect} />
-        </Col>
-      <Col className="col-8">
-        <h1 className="pb-3">Filter: <small className="text-muted">{activeFilter}</small></h1>
+      <Filters filter={filter} onSelect={onSelect} />
+      <Col className="col-9">
+        <h1 className="pb-3">Filter: <small className="text-muted">{filter}</small></h1>
         <ContentList
           tasks={ taskList}
           onDelete={onDelete} onEdit={onEdit} onCheck={onCheck}
