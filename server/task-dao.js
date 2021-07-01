@@ -75,7 +75,7 @@ exports.createTask = (task) => {
         reject(err);
         return;
       }
-      resolve(exports.getTask(this.lastID));
+      resolve(exports.getTask(task.user, this.lastID));
     });
   });
 };
@@ -89,7 +89,7 @@ exports.updateTask = (user, id, task) => {
         reject(err);
         return;
       }
-      resolve(exports.getTask(id)); // changed from resolve(exports.getTask(this.lastID) because of error "not found" (wrong lastID)
+      resolve(exports.getTask(user, id));
     });
   });
 };
